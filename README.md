@@ -10,6 +10,13 @@ Instead of treating a dependency upgrade as a single version change, SafeBump mo
 
 ---
 
+## Documentation
+
+New to the codebase? Start with the [SafeBump file guide](docs/file-guide/README.md),
+which explains what each project file does and when it should be changed.
+
+---
+
 ## The Problem
 
 A dependency upgrade rarely affects just one package.
@@ -314,13 +321,13 @@ The architecture is intended to allow additional package ecosystems to be added 
 
 ### Phase 1 — Graph Engine
 
-* [ ] Package and dependency data model
-* [ ] Directed adjacency-list graph
+* [x] Package and dependency data model
+* [x] Directed adjacency-list graph
 * [ ] BFS and DFS traversal
-* [ ] Transitive dependency discovery
-* [ ] Reverse dependency traversal
+* [x] Transitive dependency discovery
+* [x] Reverse dependency traversal
 * [ ] Cycle detection
-* [ ] Unit tests
+* [x] Unit tests
 
 ### Phase 2 — Dart / Flutter Adapter
 
