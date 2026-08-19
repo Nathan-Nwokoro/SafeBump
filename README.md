@@ -323,10 +323,10 @@ The architecture is intended to allow additional package ecosystems to be added 
 
 * [x] Package and dependency data model
 * [x] Directed adjacency-list graph
-* [ ] BFS and DFS traversal
+* [x] BFS and DFS traversal
 * [x] Transitive dependency discovery
 * [x] Reverse dependency traversal
-* [ ] Cycle detection
+* [x] Cycle detection
 * [x] Unit tests
 
 ### Phase 2 — Dart / Flutter Adapter

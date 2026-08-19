@@ -24,11 +24,15 @@ SafeBump/
 ├── src/main/java/                    Production Java code
 │   └── io/safebump/core/
 │       ├── model/PackageVersion.java
-│       └── graph/DependencyGraph.java
+│       └── graph/
+│           ├── DependencyGraph.java
+│           └── GraphTraversal.java
 ├── src/test/java/                    Automated Java tests
 │   └── io/safebump/core/
 │       ├── model/PackageVersionTest.java
-│       └── graph/DependencyGraphTest.java
+│       └── graph/
+│           ├── DependencyGraphTest.java
+│           └── GraphTraversalTest.java
 └── docs/file-guide/                  The documentation you are reading
 ```
 

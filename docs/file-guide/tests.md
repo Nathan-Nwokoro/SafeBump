@@ -55,3 +55,22 @@ It verifies that the graph:
 When graph behaviour changes, this test file should be updated alongside the
 production implementation. A failing test means either the implementation has a
 regression or the intended behaviour needs to be stated differently.
+
+## `graph/GraphTraversalTest.java`
+
+Full path:
+[`src/test/java/io/safebump/core/graph/GraphTraversalTest.java`](../../src/test/java/io/safebump/core/graph/GraphTraversalTest.java)
+
+Checks the graph-traversal algorithms independently from basic graph storage. It
+verifies:
+
+- deterministic depth-first traversal order;
+- empty traversal results for unknown packages;
+- cycle-safe depth-first traversal;
+- correct recognition of an acyclic graph;
+- self-cycle detection;
+- readable multi-package cycle paths;
+- cycle detection in a disconnected graph.
+
+These cases distinguish normal dependency sharing from a genuine directed
+cycle and ensure traversal cannot get stuck in malformed package metadata.

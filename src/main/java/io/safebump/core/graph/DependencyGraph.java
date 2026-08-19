@@ -4,9 +4,11 @@ import io.safebump.core.model.PackageVersion;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
@@ -68,12 +70,32 @@ public final class DependencyGraph {
         return transitiveNeighbours(dependencies, packageVersion);
     }
 
+    /**
+     * Returns transitive dependencies in deterministic depth-first order.
+     * The starting package is not included in the result.
+     */
+    public List<PackageVersion> getDependenciesDepthFirst(PackageVersion packageVersion) {
+        return GraphTraversal.depthFirst(dependencies, requirePackage(packageVersion));
+    }
+
     public Set<PackageVersion> getDirectDependents(PackageVersion packageVersion) {
         return directNeighbours(dependents, packageVersion);
     }
 
     public Set<PackageVersion> getTransitiveDependents(PackageVersion packageVersion) {
         return transitiveNeighbours(dependents, packageVersion);
+    }
+
+    public boolean hasCycle() {
+        return findCycle().isPresent();
+    }
+
+    /**
+     * Finds one deterministic cycle, if present.
+     * The returned path repeats its first package at the end to show the loop.
+     */
+    public Optional<List<PackageVersion>> findCycle() {
+        return GraphTraversal.findCycle(dependencies);
     }
 
     private Set<PackageVersion> directNeighbours(

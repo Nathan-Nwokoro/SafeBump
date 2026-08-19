@@ -62,10 +62,43 @@ Its public operations currently support:
 - listing all packages;
 - finding direct dependencies;
 - finding all transitive dependencies;
+- listing dependencies in depth-first order;
 - finding direct dependents;
-- finding all transitive dependents.
+- finding all transitive dependents;
+- checking whether the graph contains a cycle;
+- returning one readable cycle path.
 
 Transitive traversal uses breadth-first search with a visited set. The visited
 set prevents duplicates and stops malformed cyclic graphs from causing an
 infinite loop. Results are returned as immutable, sorted sets so callers cannot
 change the graph accidentally and output remains deterministic.
+
+## `graph/GraphTraversal.java`
+
+Full path:
+[`src/main/java/io/safebump/core/graph/GraphTraversal.java`](../../src/main/java/io/safebump/core/graph/GraphTraversal.java)
+
+`GraphTraversal` contains algorithms that operate on the graph's adjacency map.
+It is package-private, meaning callers use the public methods on
+`DependencyGraph` rather than invoking this implementation class directly.
+
+Its depth-first search visits a dependency branch completely before moving to
+the next branch. It preserves that visit order in an immutable list and uses a
+visited set so shared dependencies and cycles are handled only once.
+
+Cycle detection uses three states:
+
+```text
+unvisited → visiting → visited
+```
+
+Finding an edge to a `visiting` package means the traversal has returned to a
+package on its current path, proving that a cycle exists. SafeBump extracts that
+portion of the path and repeats the starting package at the end:
+
+```text
+package_a → package_b → package_c → package_a
+```
+
+Packages and dependencies are considered in sorted order, so the same graph
+produces the same traversal and cycle explanation each time.
