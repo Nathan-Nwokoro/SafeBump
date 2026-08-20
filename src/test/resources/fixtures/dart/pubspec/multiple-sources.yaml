@@ -1,0 +1,5 @@
+name: broken_app
+dependencies:
+  confused_package:
+    git: https://github.com/example/confused.git
+    path: packages/confused

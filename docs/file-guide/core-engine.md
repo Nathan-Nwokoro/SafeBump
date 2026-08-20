@@ -25,8 +25,9 @@ The class also:
 - sorts package identities consistently by name and then version;
 - formats identities as `name@version` for readable output.
 
-At this stage, the version remains plain text. Actual semantic-version parsing
-and comparison belong to SafeBump's later version-constraint phase.
+The version remains plain text in graph identity so adapters can ingest package
+ecosystems with different version schemes. Code that needs semantic comparison
+explicitly parses the text through the version engine.
 
 ## `graph/DependencyGraph.java`
 

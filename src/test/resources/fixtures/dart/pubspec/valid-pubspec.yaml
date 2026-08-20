@@ -1,0 +1,25 @@
+name: example_app
+version: 1.2.3
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+dependencies:
+  collection: ^1.19.1
+  local_dep:
+    path: packages/local_dep
+  git_tool:
+    git:
+      url: https://github.com/example/git_tool.git
+      ref: main
+  flutter:
+    sdk: flutter
+  custom_hosted:
+    hosted: https://packages.example.com
+    version: ">=2.0.0 <3.0.0"
+  any_dep: any
+  empty_dep:
+dev_dependencies:
+  lints: ^6.0.0
+dependency_overrides:
+  meta: 1.19.0
+  local_dep:
+    path: overrides/local_dep

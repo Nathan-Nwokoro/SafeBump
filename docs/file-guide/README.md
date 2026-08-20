@@ -7,7 +7,12 @@ It is intended to make the project easier to explore while it is being built.
 
 1. [Repository and build files](repository-and-build.md)
 2. [Core graph engine](core-engine.md)
-3. [Tests](tests.md)
+3. [Version constraints](version-constraints.md)
+4. [Upgrade analysis](upgrade-analysis.md)
+5. [Conflict explanations](conflict-explanations.md)
+6. [Dependency ingestion and Dart adapter](dependency-ingestion.md)
+7. [Command-line application](cli.md)
+8. [Tests](tests.md)
 
 ## Project map
 
@@ -22,17 +27,64 @@ SafeBump/
 ├── gradlew.bat                       Gradle launcher for Windows
 ├── gradle/wrapper/                   Pinned Gradle version and launcher code
 ├── src/main/java/                    Production Java code
-│   └── io/safebump/core/
-│       ├── model/PackageVersion.java
-│       └── graph/
-│           ├── DependencyGraph.java
-│           └── GraphTraversal.java
+│   └── io/safebump/
+│       ├── adapters/dart/
+│       │   ├── DartDependencyExporter.java
+│       │   ├── DartConstraintAnalyzer.java
+│       │   ├── DartLockfileParser.java
+│       │   ├── DartProjectAdapter.java
+│       │   ├── DartProjectAnalyzer.java
+│       │   ├── DartProjectReconciler.java
+│       │   ├── DartPubDepsAdapter.java
+│       │   ├── DartPubDepsCommand.java
+│       │   ├── DartPubspecParser.java
+│       │   ├── DartVersionConstraintParser.java
+│       │   ├── DartUpgradeAnalyzer.java
+│       │   ├── DartYamlSupport.java
+│       │   └── model/
+│       │       ├── DartDeclaredDependency.java
+│       │       ├── DartDependencySection.java
+│       │       ├── DartLockfile.java
+│       │       └── DartPubspec.java
+│       ├── cli/
+│       │   ├── CompareCommand.java
+│       │   ├── GraphCommand.java
+│       │   └── SafeBumpApplication.java
+│       └── core/
+│           ├── adapter/
+│           │   ├── DependencySourceAdapter.java
+│           │   └── DependencySourceException.java
+│           ├── analysis/
+│           │   ├── AnalysisIssue.java
+│           │   ├── ProjectAnalysis.java
+│           │   └── ProjectAnalysisService.java
+│           ├── conflict/
+│           │   ├── ConflictExplainer.java
+│           │   └── ConflictExplanation.java
+│           ├── model/
+│           │   ├── DependencyKind.java
+│           │   ├── DependencySnapshot.java
+│           │   ├── PackageMetadata.java
+│           │   └── PackageVersion.java
+│           ├── graph/
+│           │   ├── DependencyGraph.java
+│           │   └── GraphTraversal.java
+│           ├── version/
+│           │   ├── SemanticVersion.java
+│           │   ├── VersionConflict.java
+│           │   ├── VersionConflictDetector.java
+│           │   ├── VersionRange.java
+│           │   └── VersionRequirement.java
+│           └── upgrade/
+│               ├── DependencyEdge.java
+│               ├── DependencyGraphDiff.java
+│               ├── DependencyGraphDiffer.java
+│               ├── PackageChange.java
+│               ├── PackageChangeType.java
+│               ├── UpgradeAnalysis.java
+│               └── UpgradeAnalysisService.java
 ├── src/test/java/                    Automated Java tests
-│   └── io/safebump/core/
-│       ├── model/PackageVersionTest.java
-│       └── graph/
-│           ├── DependencyGraphTest.java
-│           └── GraphTraversalTest.java
+├── src/test/resources/               Dependency JSON test fixtures
 └── docs/file-guide/                  The documentation you are reading
 ```
 

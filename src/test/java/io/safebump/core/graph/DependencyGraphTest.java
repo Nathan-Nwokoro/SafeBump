@@ -105,6 +105,22 @@ class DependencyGraphTest {
                 List.copyOf(graph.getDirectDependencies(KCAL)));
     }
 
+    @Test
+    void findsTheShortestDependencyPathDeterministically() {
+        graph.addDependency(IMAGE_PICKER, AUTH);
+
+        assertEquals(
+                List.of(KCAL, FIREBASE, CORE),
+                graph.findShortestPath(KCAL, CORE).orElseThrow());
+        assertEquals(List.of(KCAL), graph.findShortestPath(KCAL, KCAL).orElseThrow());
+    }
+
+    @Test
+    void returnsNoPathForUnreachableOrUnknownPackages() {
+        assertTrue(graph.findShortestPath(CORE, KCAL).isEmpty());
+        assertTrue(graph.findShortestPath(KCAL, packageVersion("unknown")).isEmpty());
+    }
+
     private static PackageVersion packageVersion(String name) {
         return new PackageVersion(name, "1.0.0");
     }

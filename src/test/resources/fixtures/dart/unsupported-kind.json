@@ -1,0 +1,12 @@
+{
+  "root": "broken",
+  "packages": [
+    {
+      "name": "broken",
+      "version": "1.0.0",
+      "kind": "unexpected",
+      "source": "root",
+      "dependencies": []
+    }
+  ]
+}

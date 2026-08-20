@@ -4,7 +4,9 @@ import io.safebump.core.model.PackageVersion;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Objects;
@@ -86,6 +88,43 @@ public final class DependencyGraph {
         return transitiveNeighbours(dependents, packageVersion);
     }
 
+    /** Returns the shortest directed dependency path, including both endpoints. */
+    public Optional<List<PackageVersion>> findShortestPath(
+            PackageVersion from,
+            PackageVersion to) {
+        PackageVersion requiredFrom = requirePackage(from);
+        PackageVersion requiredTo = requirePackage(to);
+        if (!dependencies.containsKey(requiredFrom)
+                || !dependencies.containsKey(requiredTo)) {
+            return Optional.empty();
+        }
+        if (requiredFrom.equals(requiredTo)) {
+            return Optional.of(List.of(requiredFrom));
+        }
+
+        Queue<PackageVersion> packagesToVisit = new ArrayDeque<>();
+        Set<PackageVersion> visited = new TreeSet<>();
+        Map<PackageVersion, PackageVersion> predecessor = new HashMap<>();
+        packagesToVisit.add(requiredFrom);
+        visited.add(requiredFrom);
+
+        while (!packagesToVisit.isEmpty()) {
+            PackageVersion current = packagesToVisit.remove();
+            for (PackageVersion dependency : dependencies.get(current)) {
+                if (!visited.add(dependency)) {
+                    continue;
+                }
+                predecessor.put(dependency, current);
+                if (dependency.equals(requiredTo)) {
+                    return Optional.of(reconstructPath(
+                            requiredFrom, requiredTo, predecessor));
+                }
+                packagesToVisit.add(dependency);
+            }
+        }
+        return Optional.empty();
+    }
+
     public boolean hasCycle() {
         return findCycle().isPresent();
     }
@@ -134,6 +173,23 @@ public final class DependencyGraph {
 
     private static Set<PackageVersion> immutableSortedCopy(Set<PackageVersion> packages) {
         return Collections.unmodifiableNavigableSet(new TreeSet<>(packages));
+    }
+
+    private static List<PackageVersion> reconstructPath(
+            PackageVersion from,
+            PackageVersion to,
+            Map<PackageVersion, PackageVersion> predecessor) {
+        List<PackageVersion> reversedPath = new java.util.ArrayList<>();
+        PackageVersion current = to;
+        while (current != null) {
+            reversedPath.add(current);
+            if (current.equals(from)) {
+                break;
+            }
+            current = predecessor.get(current);
+        }
+        Collections.reverse(reversedPath);
+        return List.copyOf(reversedPath);
     }
 
     private static PackageVersion requirePackage(PackageVersion packageVersion) {
