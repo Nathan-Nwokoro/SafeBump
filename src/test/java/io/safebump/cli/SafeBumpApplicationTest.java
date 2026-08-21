@@ -23,6 +23,7 @@ class SafeBumpApplicationTest {
         assertTrue(output.toString().contains("Usage: safebump"));
         assertTrue(output.toString().contains("graph"));
         assertTrue(output.toString().contains("compare"));
+        assertTrue(output.toString().contains("solve"));
     }
 
     @Test

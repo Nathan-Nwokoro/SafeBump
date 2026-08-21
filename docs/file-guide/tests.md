@@ -9,6 +9,10 @@ Run every test with:
 ./gradlew test
 ```
 
+The GitHub Actions workflow runs the full clean build on every pull request and
+push to `main`. It also smoke-tests the installed `safebump solve` launcher and
+retains HTML/XML test reports when CI fails.
+
 ## `model/PackageVersionTest.java`
 
 Full path:
@@ -215,6 +219,46 @@ Full path:
 
 Checks public upgrade-impact summaries, detailed package changes, transitive
 labels, source errors, and exit codes.
+
+## `solver/SafeUpgradeSolverTest.java`
+
+Full path:
+[`src/test/java/io/safebump/core/solver/SafeUpgradeSolverTest.java`](../../src/test/java/io/safebump/core/solver/SafeUpgradeSolverTest.java)
+
+Checks constraint propagation, companion-package upgrades, unsatisfiable
+requirements, current-version preference, branch pruning, dependency cycles,
+missing candidate domains, and catalog-model invariants.
+
+## `adapters/dart/DartSolverCatalogParserTest.java`
+
+Full path:
+[`src/test/java/io/safebump/adapters/dart/DartSolverCatalogParserTest.java`](../../src/test/java/io/safebump/adapters/dart/DartSolverCatalogParserTest.java)
+
+Checks current and requested versions, candidate grouping, dependency
+constraints, missing root candidates, malformed JSON, and unreadable files.
+
+## `adapters/dart/DartSafeUpgradeServiceTest.java`
+
+Full path:
+[`src/test/java/io/safebump/adapters/dart/DartSafeUpgradeServiceTest.java`](../../src/test/java/io/safebump/adapters/dart/DartSafeUpgradeServiceTest.java)
+
+Runs the complete catalog-parser-to-solver path against the committed valid
+catalog fixture.
+
+## `cli/SolveCommandTest.java`
+
+Full path:
+[`src/test/java/io/safebump/cli/SolveCommandTest.java`](../../src/test/java/io/safebump/cli/SolveCommandTest.java)
+
+Checks compatible update reports, unsatisfiable requirement reports, catalog
+errors, and the command's distinct success, input-error, and no-solution exit
+codes.
+
+## `resources/fixtures/dart/solver/`
+
+Contains compatible and unsatisfiable candidate catalogs, missing-root and
+invalid-version cases, and malformed JSON. These fixtures keep solver
+integration tests offline and reproducible.
 
 ## `cli/GraphCommandTest.java`
 

@@ -59,3 +59,20 @@ prints package-change counts, transitive-change counts, topology changes, and a
 deterministic package-by-package report. It also shows whether each input's
 metadata is internally consistent. It is intentionally read-only and does not
 run `pub upgrade` or edit either project.
+
+## `cli/SolveCommand.java`
+
+Full path:
+[`src/main/java/io/safebump/cli/SolveCommand.java`](../../src/main/java/io/safebump/cli/SolveCommand.java)
+
+Implements:
+
+```bash
+safebump solve <catalog.json>
+```
+
+It prints requested versions followed by either the minimal compatible update
+set or the package and originating requirements which blocked all solutions.
+Input failures return exit code `2`, unsatisfiable searches return `3`, and a
+compatible plan returns `0`. Search-state and pruning counts make the solver's
+work visible without exposing its mutable internal state.

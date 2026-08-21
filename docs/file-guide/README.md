@@ -10,9 +10,10 @@ It is intended to make the project easier to explore while it is being built.
 3. [Version constraints](version-constraints.md)
 4. [Upgrade analysis](upgrade-analysis.md)
 5. [Conflict explanations](conflict-explanations.md)
-6. [Dependency ingestion and Dart adapter](dependency-ingestion.md)
-7. [Command-line application](cli.md)
-8. [Tests](tests.md)
+6. [Safe-upgrade solver](safe-upgrade-solver.md)
+7. [Dependency ingestion and Dart adapter](dependency-ingestion.md)
+8. [Command-line application](cli.md)
+9. [Tests](tests.md)
 
 ## Project map
 
@@ -26,6 +27,7 @@ SafeBump/
 ├── gradlew                           Gradle launcher for macOS/Linux
 ├── gradlew.bat                       Gradle launcher for Windows
 ├── gradle/wrapper/                   Pinned Gradle version and launcher code
+├── .github/workflows/ci.yml          Pull-request and main-branch CI
 ├── src/main/java/                    Production Java code
 │   └── io/safebump/
 │       ├── adapters/dart/
@@ -38,8 +40,10 @@ SafeBump/
 │       │   ├── DartPubDepsAdapter.java
 │       │   ├── DartPubDepsCommand.java
 │       │   ├── DartPubspecParser.java
-│       │   ├── DartVersionConstraintParser.java
+│       │   ├── DartSafeUpgradeService.java
+│       │   ├── DartSolverCatalogParser.java
 │       │   ├── DartUpgradeAnalyzer.java
+│       │   ├── DartVersionConstraintParser.java
 │       │   ├── DartYamlSupport.java
 │       │   └── model/
 │       │       ├── DartDeclaredDependency.java
@@ -49,7 +53,8 @@ SafeBump/
 │       ├── cli/
 │       │   ├── CompareCommand.java
 │       │   ├── GraphCommand.java
-│       │   └── SafeBumpApplication.java
+│       │   ├── SafeBumpApplication.java
+│       │   └── SolveCommand.java
 │       └── core/
 │           ├── adapter/
 │           │   ├── DependencySourceAdapter.java
@@ -69,6 +74,16 @@ SafeBump/
 │           ├── graph/
 │           │   ├── DependencyGraph.java
 │           │   └── GraphTraversal.java
+│           ├── solver/
+│           │   ├── PackageCandidate.java
+│           │   ├── SafeUpgradeAnalysis.java
+│           │   ├── SafeUpgradeService.java
+│           │   ├── SafeUpgradeSolver.java
+│           │   ├── SolveOutcome.java
+│           │   ├── SolverFailure.java
+│           │   ├── SolverProblem.java
+│           │   ├── SolverSolution.java
+│           │   └── VersionSelection.java
 │           ├── version/
 │           │   ├── SemanticVersion.java
 │           │   ├── VersionConflict.java

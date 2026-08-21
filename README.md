@@ -8,6 +8,8 @@ Instead of treating a dependency upgrade as a single version change, SafeBump mo
 
 > **Status:** 🚧 SafeBump is currently under development.
 
+[![CI](https://github.com/Nathan-Nwokoro/SafeBump/actions/workflows/ci.yml/badge.svg)](https://github.com/Nathan-Nwokoro/SafeBump/actions/workflows/ci.yml)
+
 ---
 
 ## Documentation
@@ -60,6 +62,19 @@ The `before` directory represents the current lockfile and the `after` directory
 represents a separately prepared proposed upgrade. SafeBump does not modify
 either directory. It reports upgraded, downgraded, added, removed, and
 transitively changed packages, along with added and removed dependency edges.
+
+Phase 6 adds an offline safe-upgrade solver:
+
+```bash
+./gradlew run --args="solve /path/to/candidate-catalog.json"
+```
+
+The catalog supplies the current resolution, exact versions requested by the
+user, available candidate versions, and each candidate's dependency
+constraints. SafeBump propagates those constraints, searches compatible
+candidate combinations, and returns the smallest update set it can find. The
+solver is offline and deterministic: it does not contact a registry or change
+the project while searching.
 
 ---
 
@@ -415,15 +430,15 @@ The architecture is intended to allow additional package ecosystems to be added 
 
 ### Phase 6 — Safe Upgrade Solver
 
-* [ ] Constraint propagation
-* [ ] Candidate version search
-* [ ] Backtracking
-* [ ] Graph-based search pruning
-* [ ] Minimal compatible update-set optimisation
+* [x] Constraint propagation
+* [x] Candidate version search
+* [x] Backtracking
+* [x] Graph-based search pruning
+* [x] Minimal compatible update-set optimisation
 
 ### Future
 
-* [ ] GitHub Actions integration
+* [x] GitHub Actions integration
 * [ ] Dependabot/Renovate PR analysis
 * [ ] Additional package ecosystems
 * [ ] Dependency graph visualisation
@@ -447,9 +462,10 @@ SafeBump has three primary goals:
 ## Current Status
 
 SafeBump is in early development. The graph engine, Dart/Flutter adapter,
-version-constraint engine, before/after upgrade analysis, and conflict-path
-explanation foundations are implemented. The next milestone is the safe-upgrade
-solver, which will search for compatible candidate versions automatically.
+version-constraint engine, before/after upgrade analysis, conflict-path
+explanations, and bounded safe-upgrade solver are implemented. Future work will
+connect registry candidate discovery, CI integrations, visualization, and risk
+scoring to these foundations.
 
 The first real-world target is a Flutter application, followed by support for
 larger open-source repositories as the analysis engine develops.
