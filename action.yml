@@ -1,0 +1,54 @@
+name: SafeBump dependency PR analysis
+description: Compare two resolved Dart or Flutter projects and create a Markdown PR report.
+
+inputs:
+  before-project:
+    description: Absolute or workspace-relative path to the resolved base project.
+    required: true
+  after-project:
+    description: Absolute or workspace-relative path to the resolved pull-request project.
+    required: true
+
+outputs:
+  report-file:
+    description: Path to the generated Markdown report on the runner.
+    value: ${{ steps.analysis.outputs.report-file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: "21"
+
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v6
+      with:
+        cache-provider: basic
+
+    - name: Build SafeBump
+      shell: bash
+      run: >-
+        "$GITHUB_ACTION_PATH/gradlew"
+        -p "$GITHUB_ACTION_PATH"
+        installDist
+        --no-daemon
+
+    - name: Analyse dependency update
+      id: analysis
+      shell: bash
+      env:
+        SAFEBUMP_BEFORE_PROJECT: ${{ inputs.before-project }}
+        SAFEBUMP_AFTER_PROJECT: ${{ inputs.after-project }}
+      run: |
+        set -euo pipefail
+        report_file="$RUNNER_TEMP/safebump-pr-report.md"
+        "$GITHUB_ACTION_PATH/build/install/safebump/bin/safebump" \
+          pr-report \
+          "$SAFEBUMP_BEFORE_PROJECT" \
+          "$SAFEBUMP_AFTER_PROJECT" \
+          --output "$report_file"
+        echo "report-file=$report_file" >> "$GITHUB_OUTPUT"
+        cat "$report_file" >> "$GITHUB_STEP_SUMMARY"

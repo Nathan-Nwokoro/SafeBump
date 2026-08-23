@@ -13,7 +13,8 @@ It is intended to make the project easier to explore while it is being built.
 6. [Safe-upgrade solver](safe-upgrade-solver.md)
 7. [Dependency ingestion and Dart adapter](dependency-ingestion.md)
 8. [Command-line application](cli.md)
-9. [Tests](tests.md)
+9. [Dependency pull-request analysis](dependency-pr-analysis.md)
+10. [Tests](tests.md)
 
 ## Project map
 
@@ -27,7 +28,9 @@ SafeBump/
 ├── gradlew                           Gradle launcher for macOS/Linux
 ├── gradlew.bat                       Gradle launcher for Windows
 ├── gradle/wrapper/                   Pinned Gradle version and launcher code
+├── action.yml                        Composite dependency-PR analysis action
 ├── .github/workflows/ci.yml          Pull-request and main-branch CI
+├── docs/examples/                    Consumer GitHub workflow templates
 ├── src/main/java/                    Production Java code
 │   └── io/safebump/
 │       ├── adapters/dart/
@@ -53,6 +56,7 @@ SafeBump/
 │       ├── cli/
 │       │   ├── CompareCommand.java
 │       │   ├── GraphCommand.java
+│       │   ├── PullRequestReportCommand.java
 │       │   ├── SafeBumpApplication.java
 │       │   └── SolveCommand.java
 │       └── core/
@@ -71,6 +75,8 @@ SafeBump/
 │           │   ├── DependencySnapshot.java
 │           │   ├── PackageMetadata.java
 │           │   └── PackageVersion.java
+│           ├── report/
+│           │   └── PullRequestReportFormatter.java
 │           ├── graph/
 │           │   ├── DependencyGraph.java
 │           │   └── GraphTraversal.java

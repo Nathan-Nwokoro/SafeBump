@@ -220,6 +220,22 @@ Full path:
 Checks public upgrade-impact summaries, detailed package changes, transitive
 labels, source errors, and exit codes.
 
+## `report/PullRequestReportFormatterTest.java`
+
+Full path:
+[`src/test/java/io/safebump/core/report/PullRequestReportFormatterTest.java`](../../src/test/java/io/safebump/core/report/PullRequestReportFormatterTest.java)
+
+Checks deterministic GitHub Markdown, the stable comment marker, package and
+edge tables, metadata-warning escaping, and the no-change report.
+
+## `cli/PullRequestReportCommandTest.java`
+
+Full path:
+[`src/test/java/io/safebump/cli/PullRequestReportCommandTest.java`](../../src/test/java/io/safebump/cli/PullRequestReportCommandTest.java)
+
+Checks standard-output and file-output modes, UTF-8 report generation,
+dependency-source failures, and exit codes without launching Dart.
+
 ## `solver/SafeUpgradeSolverTest.java`
 
 Full path:

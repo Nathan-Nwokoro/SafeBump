@@ -76,3 +76,19 @@ set or the package and originating requirements which blocked all solutions.
 Input failures return exit code `2`, unsatisfiable searches return `3`, and a
 compatible plan returns `0`. Search-state and pruning counts make the solver's
 work visible without exposing its mutable internal state.
+
+## `cli/PullRequestReportCommand.java`
+
+Full path:
+[`src/main/java/io/safebump/cli/PullRequestReportCommand.java`](../../src/main/java/io/safebump/cli/PullRequestReportCommand.java)
+
+Implements:
+
+```bash
+safebump pr-report <before-project> <after-project> [--output report.md]
+```
+
+It runs the same resolved graph comparison as `compare`, then formats the
+result as stable GitHub-flavoured Markdown. Standard output is useful for local
+inspection; `--output` gives CI a UTF-8 report file it can upload or publish.
+Input and output failures return exit code `2`.

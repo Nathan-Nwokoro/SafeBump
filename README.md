@@ -76,6 +76,20 @@ candidate combinations, and returns the smallest update set it can find. The
 solver is offline and deterministic: it does not contact a registry or change
 the project while searching.
 
+Phase 7 can turn a resolved before/after comparison into a Markdown pull-request
+report:
+
+```bash
+./gradlew run --args="pr-report /path/to/base /path/to/proposed --output report.md"
+```
+
+The repository also exposes a composite GitHub Action for dependency-update
+automation. The paired
+[analysis](docs/examples/dependency-pr-analysis.yml) and
+[comment](docs/examples/dependency-pr-comment.yml) workflow templates safely
+support Dependabot and Renovate: analysis runs with read-only permissions, then
+a separate trusted workflow creates or updates one SafeBump PR comment.
+
 ---
 
 ## The Problem
@@ -436,10 +450,19 @@ The architecture is intended to allow additional package ecosystems to be added 
 * [x] Graph-based search pruning
 * [x] Minimal compatible update-set optimisation
 
+### Phase 7 — Dependency PR Analysis
+
+* [x] Deterministic GitHub Markdown reports
+* [x] Packaged composite GitHub Action
+* [x] Dependabot and Renovate actor filtering
+* [x] Read-only analysis workflow
+* [x] Trusted single-comment update workflow
+* [x] Job summary and short-lived report artifact
+
 ### Future
 
 * [x] GitHub Actions integration
-* [ ] Dependabot/Renovate PR analysis
+* [x] Dependabot/Renovate PR analysis
 * [ ] Additional package ecosystems
 * [ ] Dependency graph visualisation
 * [ ] Upgrade risk scoring
@@ -467,8 +490,10 @@ explanations, and bounded safe-upgrade solver are implemented. Future work will
 connect registry candidate discovery, CI integrations, visualization, and risk
 scoring to these foundations.
 
-The first real-world target is a Flutter application, followed by support for
-larger open-source repositories as the analysis engine develops.
+The first real-world target is a Flutter application. SafeBump can now analyse
+resolved dependency-update states locally or from Dependabot/Renovate pull
+requests; future work will add risk scoring, visualisation, and more package
+ecosystems.
 
 ---
 

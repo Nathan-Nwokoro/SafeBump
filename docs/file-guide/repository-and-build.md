@@ -74,6 +74,20 @@ Runs on pull requests, pushes to `main`, and manual dispatches. The workflow:
 The job has a 15-minute timeout and uses `--no-daemon` so a stalled build cannot
 consume a runner indefinitely.
 
+## `action.yml`
+
+Full path: [`/action.yml`](../../action.yml)
+
+Defines SafeBump's composite GitHub Action for dependency-update pull requests.
+It builds the action revision, compares two caller-provided resolved projects,
+adds the Markdown report to the job summary, and exposes the report file to
+later workflow steps.
+
+The action itself does not request repository write permissions. The example
+integration separates read-only analysis from the trusted workflow that
+updates a PR comment; see the
+[dependency PR analysis guide](dependency-pr-analysis.md).
+
 ## `gradle.properties`
 
 Contains general Gradle behaviour settings. SafeBump enables build caching and

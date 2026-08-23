@@ -24,6 +24,7 @@ class SafeBumpApplicationTest {
         assertTrue(output.toString().contains("graph"));
         assertTrue(output.toString().contains("compare"));
         assertTrue(output.toString().contains("solve"));
+        assertTrue(output.toString().contains("pr-report"));
     }
 
     @Test
