@@ -1,0 +1,8 @@
+{
+  "root": {"name": "app", "version": "development"},
+  "current": {"app": "development"},
+  "requested": {},
+  "candidates": [
+    {"name": "app", "version": "development", "dependencies": {}}
+  ]
+}

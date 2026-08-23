@@ -1,0 +1,5 @@
+packages:
+  collection:
+    dependency: unexpected
+    source: hosted
+    version: "1.19.1"

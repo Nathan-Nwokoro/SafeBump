@@ -1,0 +1,86 @@
+{
+  "root": "safebump_probe",
+  "packages": [
+    {
+      "name": "safebump_probe",
+      "version": "1.0.0",
+      "kind": "root",
+      "source": "root",
+      "dependencies": [
+        "collection",
+        "local_dep",
+        "git_tool",
+        "flutter",
+        "lints"
+      ],
+      "directDependencies": [
+        "collection",
+        "local_dep",
+        "git_tool",
+        "flutter"
+      ],
+      "devDependencies": [
+        "lints"
+      ]
+    },
+    {
+      "name": "lints",
+      "version": "6.1.0",
+      "kind": "dev",
+      "source": "hosted",
+      "dependencies": [],
+      "directDependencies": []
+    },
+    {
+      "name": "local_dep",
+      "version": "2.0.0",
+      "kind": "direct",
+      "source": "path",
+      "dependencies": ["meta"],
+      "directDependencies": ["meta"]
+    },
+    {
+      "name": "git_tool",
+      "version": "3.1.0",
+      "kind": "direct",
+      "source": "git",
+      "dependencies": ["meta"],
+      "directDependencies": ["meta"]
+    },
+    {
+      "name": "flutter",
+      "version": "0.0.0",
+      "kind": "direct",
+      "source": "sdk",
+      "dependencies": ["collection"],
+      "directDependencies": ["collection"]
+    },
+    {
+      "name": "meta",
+      "version": "1.19.0",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": [],
+      "directDependencies": []
+    },
+    {
+      "name": "collection",
+      "version": "1.19.1",
+      "kind": "direct",
+      "source": "hosted",
+      "dependencies": [],
+      "directDependencies": []
+    }
+  ],
+  "sdks": [
+    {
+      "name": "Dart",
+      "version": "3.12.2"
+    },
+    {
+      "name": "Flutter",
+      "version": "3.44.8"
+    }
+  ],
+  "executables": []
+}

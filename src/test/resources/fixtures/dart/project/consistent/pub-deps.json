@@ -1,0 +1,40 @@
+{
+  "root": "safebump_probe",
+  "packages": [
+    {
+      "name": "safebump_probe",
+      "version": "1.0.0",
+      "kind": "root",
+      "source": "root",
+      "dependencies": ["collection", "local_dep", "lints"]
+    },
+    {
+      "name": "lints",
+      "version": "6.1.0",
+      "kind": "dev",
+      "source": "hosted",
+      "dependencies": []
+    },
+    {
+      "name": "local_dep",
+      "version": "2.0.0",
+      "kind": "direct",
+      "source": "path",
+      "dependencies": ["meta"]
+    },
+    {
+      "name": "meta",
+      "version": "1.19.0",
+      "kind": "transitive",
+      "source": "hosted",
+      "dependencies": []
+    },
+    {
+      "name": "collection",
+      "version": "1.19.1",
+      "kind": "direct",
+      "source": "hosted",
+      "dependencies": []
+    }
+  ]
+}

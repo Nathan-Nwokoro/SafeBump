@@ -32,15 +32,47 @@ becomes a multi-module build.
 
 The main build recipe. It currently:
 
-- enables Gradle's Java library support;
+- enables Gradle's executable application support;
 - identifies the project as `io.safebump`;
 - compiles source code with Java 21 compatibility;
+- adds Jackson Databind for reading ecosystem JSON files;
+- adds Jackson's YAML module for Dart pubspec and lockfile parsing;
+- adds Picocli for command parsing, help, and exit-code handling;
+- configures `SafeBumpApplication` as the executable entry point;
 - downloads test libraries from Maven Central;
 - adds JUnit 5 for automated tests;
 - configures Gradle's `test` task to use JUnit.
 
 Edit this when adding a library, build plugin, application entry point, or new
 build task.
+
+The Gradle application plugin also provides:
+
+```bash
+./gradlew run
+./gradlew installDist
+```
+
+`run` launches SafeBump directly. `installDist` creates a local distribution
+under `build/install/safebump/` containing platform launchers and required JARs.
+
+## `.github/workflows/ci.yml`
+
+Full path:
+[`/.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
+
+Runs on pull requests, pushes to `main`, and manual dispatches. The workflow:
+
+- grants the job read-only repository permissions;
+- cancels superseded runs for the same branch or pull request;
+- installs Eclipse Temurin Java 21;
+- validates the Gradle wrapper and restores the open-source Gradle cache;
+- runs a clean build, all tests, and local CLI distribution creation;
+- smoke-tests the packaged solver against the compatible catalog fixture;
+- uploads test reports for seven days only when a job fails.
+
+The job has a 15-minute timeout and uses `--no-daemon` so a stalled build cannot
+consume a runner indefinitely.
 
 ## `gradle.properties`
 

@@ -8,12 +8,73 @@ Instead of treating a dependency upgrade as a single version change, SafeBump mo
 
 > **Status:** 🚧 SafeBump is currently under development.
 
+[![CI](https://github.com/Nathan-Nwokoro/SafeBump/actions/workflows/ci.yml/badge.svg)](https://github.com/Nathan-Nwokoro/SafeBump/actions/workflows/ci.yml)
+
 ---
 
 ## Documentation
 
 New to the codebase? Start with the [SafeBump file guide](docs/file-guide/README.md),
 which explains what each project file does and when it should be changed.
+
+---
+
+## Current CLI
+
+SafeBump can build and summarize the resolved dependency graph of a Dart or
+Flutter project:
+
+```bash
+./gradlew run --args="graph /path/to/dart-project"
+```
+
+Example output:
+
+```text
+SafeBump dependency graph
+
+Project: example_app@1.0.0
+Packages: 42
+Dependencies: 67
+Cycles: none
+Metadata: consistent
+```
+
+The project must contain `pubspec.yaml` and have an up-to-date dependency
+resolution. SafeBump executes `dart pub deps --json`, validates the result,
+converts it into the ecosystem-independent graph model, reconciles the lockfile,
+and checks resolved direct versions against their declared constraints.
+
+To create a local command distribution, run:
+
+```bash
+./gradlew installDist
+./build/install/safebump/bin/safebump graph /path/to/dart-project
+```
+
+SafeBump can also compare two already-resolved copies of a project:
+
+```bash
+./gradlew run --args="compare /path/to/before /path/to/after"
+```
+
+The `before` directory represents the current lockfile and the `after` directory
+represents a separately prepared proposed upgrade. SafeBump does not modify
+either directory. It reports upgraded, downgraded, added, removed, and
+transitively changed packages, along with added and removed dependency edges.
+
+Phase 6 adds an offline safe-upgrade solver:
+
+```bash
+./gradlew run --args="solve /path/to/candidate-catalog.json"
+```
+
+The catalog supplies the current resolution, exact versions requested by the
+user, available candidate versions, and each candidate's dependency
+constraints. SafeBump propagates those constraints, searches compatible
+candidate combinations, and returns the smallest update set it can find. The
+solver is offline and deterministic: it does not contact a registry or change
+the project while searching.
 
 ---
 
@@ -300,11 +361,15 @@ The graph and analysis engines can therefore remain ecosystem-independent.
 The first target is **Dart / Flutter**, using:
 
 ```text
+dart pub deps --json
 pubspec.yaml
 pubspec.lock
 ```
 
-to construct dependency graphs.
+SafeBump uses Dart's JSON dependency output for the complete resolved graph.
+It reconciles that graph with declared dependencies from the pubspec and
+resolved package metadata from the lockfile. The lockfile alone does not contain
+every package-to-package dependency edge.
 
 The architecture is intended to allow additional package ecosystems to be added later, including:
 
@@ -331,46 +396,49 @@ The architecture is intended to allow additional package ecosystems to be added 
 
 ### Phase 2 — Dart / Flutter Adapter
 
-* [ ] Parse `pubspec.yaml`
-* [ ] Parse `pubspec.lock`
-* [ ] Convert dependency metadata into the SafeBump graph model
-* [ ] Analyse a real Flutter project
+* [x] Parse `dart pub deps --json`
+* [x] Execute Dart dependency export for a project
+* [x] Parse `pubspec.yaml`
+* [x] Parse `pubspec.lock`
+* [x] Convert dependency metadata into the SafeBump graph model
+* [x] Expose dependency graph summary through the CLI
+* [x] Analyse a real Flutter project
 
 ### Phase 3 — Version Constraints
 
-* [ ] Semantic version representation
-* [ ] Version comparison
-* [ ] Version ranges
-* [ ] Constraint intersection
-* [ ] Basic conflict detection
+* [x] Semantic version representation
+* [x] Version comparison
+* [x] Version ranges
+* [x] Constraint intersection
+* [x] Basic conflict detection
 
 ### Phase 4 — Upgrade Analysis
 
-* [ ] Construct pre-upgrade graph
-* [ ] Construct proposed graph
-* [ ] Graph diffing
-* [ ] Detect transitive upgrades
-* [ ] Detect added and removed packages
-* [ ] Generate upgrade-impact reports
+* [x] Construct pre-upgrade graph
+* [x] Construct proposed graph
+* [x] Graph diffing
+* [x] Detect transitive upgrades
+* [x] Detect added and removed packages
+* [x] Generate upgrade-impact reports
 
 ### Phase 5 — Conflict Explanation
 
-* [ ] Identify conflicting constraints
-* [ ] Trace constraints to their originating packages
-* [ ] Find minimal explanatory dependency paths
-* [ ] Produce human-readable conflict reports
+* [x] Identify conflicting constraints
+* [x] Trace constraints to their originating packages
+* [x] Find minimal explanatory dependency paths
+* [x] Produce human-readable conflict reports
 
 ### Phase 6 — Safe Upgrade Solver
 
-* [ ] Constraint propagation
-* [ ] Candidate version search
-* [ ] Backtracking
-* [ ] Graph-based search pruning
-* [ ] Minimal compatible update-set optimisation
+* [x] Constraint propagation
+* [x] Candidate version search
+* [x] Backtracking
+* [x] Graph-based search pruning
+* [x] Minimal compatible update-set optimisation
 
 ### Future
 
-* [ ] GitHub Actions integration
+* [x] GitHub Actions integration
 * [ ] Dependabot/Renovate PR analysis
 * [ ] Additional package ecosystems
 * [ ] Dependency graph visualisation
@@ -393,11 +461,14 @@ SafeBump has three primary goals:
 
 ## Current Status
 
-SafeBump is in early development.
+SafeBump is in early development. The graph engine, Dart/Flutter adapter,
+version-constraint engine, before/after upgrade analysis, conflict-path
+explanations, and bounded safe-upgrade solver are implemented. Future work will
+connect registry candidate discovery, CI integrations, visualization, and risk
+scoring to these foundations.
 
-The initial work focuses on implementing the dependency graph and graph traversal algorithms before integrating with real package metadata.
-
-The first real-world target will be a Flutter application, followed by support for larger open-source repositories as the analysis engine develops.
+The first real-world target is a Flutter application, followed by support for
+larger open-source repositories as the analysis engine develops.
 
 ---
 

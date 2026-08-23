@@ -1,0 +1,31 @@
+packages:
+  collection:
+    dependency: "direct main"
+    description:
+      name: collection
+      url: https://pub.dev
+    source: hosted
+    version: "1.19.1"
+  lints:
+    dependency: "direct dev"
+    description:
+      name: lints
+      url: https://pub.dev
+    source: hosted
+    version: "6.1.0"
+  local_dep:
+    dependency: "direct main"
+    description:
+      path: local_dep
+      relative: true
+    source: path
+    version: "2.0.0"
+  meta:
+    dependency: transitive
+    description:
+      name: meta
+      url: https://pub.dev
+    source: hosted
+    version: "1.19.0"
+sdks:
+  dart: ">=3.12.0 <4.0.0"

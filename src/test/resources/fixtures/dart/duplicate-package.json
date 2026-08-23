@@ -1,0 +1,19 @@
+{
+  "root": "duplicate",
+  "packages": [
+    {
+      "name": "duplicate",
+      "version": "1.0.0",
+      "kind": "root",
+      "source": "root",
+      "dependencies": []
+    },
+    {
+      "name": "duplicate",
+      "version": "2.0.0",
+      "kind": "direct",
+      "source": "path",
+      "dependencies": []
+    }
+  ]
+}
