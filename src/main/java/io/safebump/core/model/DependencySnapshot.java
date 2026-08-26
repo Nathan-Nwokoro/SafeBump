@@ -21,19 +21,19 @@ public record DependencySnapshot(
         Objects.requireNonNull(packagesByName, "packagesByName");
 
         NavigableMap<String, PackageMetadata> metadataCopy = new TreeMap<>();
-        packagesByName.forEach((name, metadata) -> {
-            Objects.requireNonNull(name, "package name");
+        packagesByName.forEach((identity, metadata) -> {
+            Objects.requireNonNull(identity, "package identity");
             Objects.requireNonNull(metadata, "package metadata");
-            if (!name.equals(metadata.packageVersion().name())) {
-                throw new IllegalArgumentException(
-                        "Package metadata key must match its package name: " + name);
+            if (identity.isBlank()) {
+                throw new IllegalArgumentException("Package identity must not be blank");
             }
-            metadataCopy.put(name, metadata);
+            metadataCopy.put(identity, metadata);
         });
         packagesByName = Collections.unmodifiableNavigableMap(metadataCopy);
 
-        PackageMetadata rootMetadata = packagesByName.get(rootPackage.name());
-        if (rootMetadata == null || !rootMetadata.packageVersion().equals(rootPackage)) {
+        boolean hasRootMetadata = packagesByName.values().stream()
+                .anyMatch(metadata -> metadata.packageVersion().equals(rootPackage));
+        if (!hasRootMetadata) {
             throw new IllegalArgumentException("Root package metadata is missing");
         }
         if (!graph.containsPackage(rootPackage)) {
@@ -47,6 +47,16 @@ public record DependencySnapshot(
 
     public Optional<PackageMetadata> findPackage(String packageName) {
         Objects.requireNonNull(packageName, "packageName");
-        return Optional.ofNullable(packagesByName.get(packageName));
+        java.util.List<PackageMetadata> matches = findPackages(packageName);
+        return matches.size() == 1 ? Optional.of(matches.getFirst()) : Optional.empty();
+    }
+
+    /** Returns every resolved version of a package name in deterministic order. */
+    public java.util.List<PackageMetadata> findPackages(String packageName) {
+        Objects.requireNonNull(packageName, "packageName");
+        return packagesByName.values().stream()
+                .filter(metadata -> metadata.packageVersion().name().equals(packageName))
+                .sorted(java.util.Comparator.comparing(PackageMetadata::packageVersion))
+                .toList();
     }
 }

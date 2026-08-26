@@ -1,6 +1,6 @@
 package io.safebump.cli;
 
-import io.safebump.adapters.dart.DartUpgradeAnalyzer;
+import io.safebump.adapters.BuiltInEcosystems;
 import io.safebump.core.adapter.DependencySourceException;
 import io.safebump.core.analysis.ProjectAnalysis;
 import io.safebump.core.upgrade.DependencyGraphDiff;
@@ -8,9 +8,11 @@ import io.safebump.core.upgrade.PackageChange;
 import io.safebump.core.upgrade.PackageChangeType;
 import io.safebump.core.upgrade.UpgradeAnalysis;
 import io.safebump.core.upgrade.UpgradeAnalysisService;
+import io.safebump.core.upgrade.EcosystemUpgradeAnalyzer;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Spec;
 
 import java.nio.file.Path;
@@ -38,11 +40,19 @@ public final class CompareCommand implements Callable<Integer> {
             description = "Resolved project directory after the upgrade.")
     private Path afterProject;
 
+    @Option(names = "--ecosystem", paramLabel = "<id>",
+            description = "Select an ecosystem when project markers are ambiguous.")
+    private String ecosystem;
+
+    @Option(names = "--plugin-dir", paramLabel = "<directory>",
+            description = "Load additional ecosystem-provider JARs from this directory.")
+    private Path pluginDirectory;
+
     @Spec
     private CommandSpec commandSpec;
 
     public CompareCommand() {
-        this(new DartUpgradeAnalyzer());
+        this.upgradeAnalysisService = null;
     }
 
     CompareCommand(UpgradeAnalysisService upgradeAnalysisService) {
@@ -53,8 +63,11 @@ public final class CompareCommand implements Callable<Integer> {
     @Override
     public Integer call() {
         try {
-            UpgradeAnalysis analysis = upgradeAnalysisService.analyse(
-                    beforeProject, afterProject);
+            UpgradeAnalysisService service = upgradeAnalysisService == null
+                    ? new EcosystemUpgradeAnalyzer(
+                            BuiltInEcosystems.create(pluginDirectory), ecosystem)
+                    : upgradeAnalysisService;
+            UpgradeAnalysis analysis = service.analyse(beforeProject, afterProject);
             printAnalysis(analysis);
             return 0;
         } catch (DependencySourceException exception) {
@@ -69,6 +82,7 @@ public final class CompareCommand implements Callable<Integer> {
                 "SafeBump upgrade impact%n%n"
                         + "Before: %s%n"
                         + "After: %s%n"
+                        + "Ecosystem: %s%n"
                         + "Before metadata: %s%n"
                         + "After metadata: %s%n"
                         + "Packages changed: %d%n"
@@ -81,6 +95,7 @@ public final class CompareCommand implements Callable<Integer> {
                         + "Dependency edges removed: %d%n",
                 analysis.before().dependencySnapshot().rootPackage(),
                 analysis.after().dependencySnapshot().rootPackage(),
+                analysis.before().ecosystem(),
                 formatMetadata(analysis.before()),
                 formatMetadata(analysis.after()),
                 diff.changedPackages().size(),

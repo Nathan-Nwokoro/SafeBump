@@ -14,7 +14,8 @@ It is intended to make the project easier to explore while it is being built.
 7. [Dependency ingestion and Dart adapter](dependency-ingestion.md)
 8. [Command-line application](cli.md)
 9. [Dependency pull-request analysis](dependency-pr-analysis.md)
-10. [Tests](tests.md)
+10. [Multi-ecosystem adapters and plugins](multi-ecosystem.md)
+11. [Tests](tests.md)
 
 ## Project map
 
@@ -53,8 +54,14 @@ SafeBump/
 │       │       ├── DartDependencySection.java
 │       │       ├── DartLockfile.java
 │       │       └── DartPubspec.java
+│       ├── adapters/npm/              npm lockfile graph adapter
+│       ├── adapters/python/           pip inspect graph adapter
+│       ├── adapters/maven/            Maven JSON graph adapter
+│       ├── adapters/gradle/           Gradle ResolutionResult adapter
+│       ├── adapters/BuiltInEcosystems.java
 │       ├── cli/
 │       │   ├── CompareCommand.java
+│       │   ├── DetectCommand.java
 │       │   ├── GraphCommand.java
 │       │   ├── PullRequestReportCommand.java
 │       │   ├── SafeBumpApplication.java
@@ -63,6 +70,7 @@ SafeBump/
 │           ├── adapter/
 │           │   ├── DependencySourceAdapter.java
 │           │   └── DependencySourceException.java
+│           ├── ecosystem/             Detection and plugin-provider contracts
 │           ├── analysis/
 │           │   ├── AnalysisIssue.java
 │           │   ├── ProjectAnalysis.java

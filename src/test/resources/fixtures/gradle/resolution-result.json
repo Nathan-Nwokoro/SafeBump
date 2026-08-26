@@ -1,0 +1,34 @@
+{
+  "root": "com.example:demo@1.0.0",
+  "configuration": "runtimeClasspath",
+  "nodes": [
+    {
+      "key": "com.example:demo@1.0.0",
+      "name": "com.example:demo",
+      "version": "1.0.0",
+      "direct": false
+    },
+    {
+      "key": "org.example:library@2.1.0",
+      "name": "org.example:library",
+      "version": "2.1.0",
+      "direct": true
+    },
+    {
+      "key": "org.shared:core@3.0.0",
+      "name": "org.shared:core",
+      "version": "3.0.0",
+      "direct": false
+    }
+  ],
+  "edges": [
+    {
+      "from": "com.example:demo@1.0.0",
+      "to": "org.example:library@2.1.0"
+    },
+    {
+      "from": "org.example:library@2.1.0",
+      "to": "org.shared:core@3.0.0"
+    }
+  ]
+}

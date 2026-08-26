@@ -62,6 +62,22 @@ class DependencyGraphDifferTest {
         assertTrue(differ.compare(snapshot, snapshot).isEmpty());
     }
 
+    @Test
+    void comparesMultipleResolvedVersionsWithoutOverwritingThem() {
+        DependencySnapshot before = multiVersionSnapshot("1.5.0", "2.1.0");
+        DependencySnapshot after = multiVersionSnapshot("1.6.0", "2.1.0");
+
+        DependencyGraphDiff diff = differ.compare(before, after);
+
+        assertEquals(1, diff.changesOfType(PackageChangeType.UPGRADED).size());
+        PackageChange upgrade = diff.changesOfType(PackageChangeType.UPGRADED).getFirst();
+        assertEquals("shared", upgrade.packageName());
+        assertEquals("1.5.0", upgrade.before().orElseThrow().packageVersion().version());
+        assertEquals("1.6.0", upgrade.after().orElseThrow().packageVersion().version());
+        assertEquals(List.of(edge("app", "shared@1.6.0")), diff.addedEdges());
+        assertEquals(List.of(edge("app", "shared@1.5.0")), diff.removedEdges());
+    }
+
     private static List<String> names(List<PackageChange> changes) {
         return changes.stream().map(PackageChange::packageName).toList();
     }
@@ -85,6 +101,24 @@ class DependencyGraphDifferTest {
 
     private static PackageData packageData(String version, DependencyKind kind) {
         return new PackageData(version, kind);
+    }
+
+    private static DependencySnapshot multiVersionSnapshot(
+            String firstVersion,
+            String secondVersion) {
+        PackageVersion root = new PackageVersion("app", "1.0.0");
+        PackageVersion first = new PackageVersion("shared", firstVersion);
+        PackageVersion second = new PackageVersion("shared", secondVersion);
+        DependencyGraph graph = new DependencyGraph();
+        graph.addDependency(root, first);
+        graph.addDependency(root, second);
+        Map<String, PackageMetadata> metadata = Map.of(
+                root.toString(), new PackageMetadata(root, DependencyKind.ROOT, "root"),
+                first.toString(), new PackageMetadata(
+                        first, DependencyKind.DIRECT, "hosted"),
+                second.toString(), new PackageMetadata(
+                        second, DependencyKind.DIRECT, "hosted"));
+        return new DependencySnapshot(root, graph, metadata);
     }
 
     private static DependencyEdge edge(String from, String to) {

@@ -1,0 +1,55 @@
+{
+  "version": "1",
+  "pip_version": "26.2",
+  "installed": [
+    {
+      "metadata": {
+        "name": "demo-app",
+        "version": "1.0.0",
+        "requires_dist": ["Requests>=2.32", "rich ; python_version >= '3.11'"]
+      },
+      "requested": true,
+      "installer": "pip",
+      "direct_url": {
+        "url": "file:///workspace/demo-app",
+        "dir_info": {"editable": true}
+      }
+    },
+    {
+      "metadata": {
+        "name": "requests",
+        "version": "2.32.4",
+        "requires_dist": ["urllib3<3", "charset_normalizer>=2"]
+      },
+      "requested": true,
+      "installer": "pip"
+    },
+    {
+      "metadata": {
+        "name": "urllib3",
+        "version": "2.5.0"
+      },
+      "requested": false,
+      "installer": "pip"
+    },
+    {
+      "metadata": {
+        "name": "charset-normalizer",
+        "version": "3.4.2"
+      },
+      "requested": false,
+      "installer": "pip"
+    },
+    {
+      "metadata": {
+        "name": "rich",
+        "version": "14.0.0"
+      },
+      "requested": true,
+      "installer": "pip"
+    }
+  ],
+  "environment": {
+    "python_version": "3.12"
+  }
+}

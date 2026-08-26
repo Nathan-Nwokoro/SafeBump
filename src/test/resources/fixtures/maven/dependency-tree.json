@@ -1,0 +1,32 @@
+{
+  "groupId": "com.example",
+  "artifactId": "demo-app",
+  "version": "1.0.0",
+  "type": "jar",
+  "scope": "",
+  "children": [
+    {
+      "groupId": "org.example",
+      "artifactId": "library-a",
+      "version": "2.0.0",
+      "type": "jar",
+      "scope": "compile",
+      "children": [
+        {
+          "groupId": "org.shared",
+          "artifactId": "core",
+          "version": "3.1.0",
+          "type": "jar",
+          "scope": "compile"
+        }
+      ]
+    },
+    {
+      "groupId": "org.junit.jupiter",
+      "artifactId": "junit-jupiter",
+      "version": "5.12.2",
+      "type": "jar",
+      "scope": "test"
+    }
+  ]
+}

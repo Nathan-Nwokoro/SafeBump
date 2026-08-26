@@ -21,8 +21,26 @@ which explains what each project file does and when it should be changed.
 
 ## Current CLI
 
-SafeBump can build and summarize the resolved dependency graph of a Dart or
-Flutter project:
+SafeBump automatically detects these dependency ecosystems:
+
+| Ecosystem | Detection and resolved input |
+| --- | --- |
+| Dart / Flutter | `pubspec.yaml`, `pubspec.lock`, `dart pub deps --json` |
+| npm / Node.js | `package-lock.json` or `npm-shrinkwrap.json` v2/v3 |
+| Python / pip | `pyproject.toml`, `requirements.txt`, or `setup.py`; `pip inspect` schema v1 |
+| Maven | `pom.xml`; Maven Dependency Plugin JSON |
+| Gradle | Gradle build/settings files; `ResolutionResult` from a resolvable configuration |
+
+Check detection without resolving the graph:
+
+```bash
+./gradlew run --args="detect /path/to/project"
+```
+
+If a directory contains markers for more than one ecosystem, select one
+explicitly with `--ecosystem dart|npm|python|maven|gradle`.
+
+SafeBump can build and summarize a resolved dependency graph:
 
 ```bash
 ./gradlew run --args="graph /path/to/dart-project"
@@ -40,10 +58,10 @@ Cycles: none
 Metadata: consistent
 ```
 
-The project must contain `pubspec.yaml` and have an up-to-date dependency
-resolution. SafeBump executes `dart pub deps --json`, validates the result,
-converts it into the ecosystem-independent graph model, reconciles the lockfile,
-and checks resolved direct versions against their declared constraints.
+The project must have an up-to-date resolution for its detected package
+manager. Each adapter converts its native lockfile or structured package-manager
+output into the same ecosystem-independent graph model. npm graphs preserve
+multiple installed versions of the same package instead of overwriting them.
 
 To create a local command distribution, run:
 
@@ -459,11 +477,22 @@ The architecture is intended to allow additional package ecosystems to be added 
 * [x] Trusted single-comment update workflow
 * [x] Job summary and short-lived report artifact
 
+### Phase 8 — Multi-Ecosystem Foundation
+
+* [x] Automatic project ecosystem detection
+* [x] Explicit ecosystem selection for mixed repositories
+* [x] npm package-lock v2/v3 adapter
+* [x] Python adapter using stable pip inspect JSON
+* [x] Maven dependency-plugin JSON adapter
+* [x] Gradle ResolutionResult adapter
+* [x] Multiple resolved versions of one package name
+* [x] ServiceLoader and plugin-directory extension mechanism
+
 ### Future
 
 * [x] GitHub Actions integration
 * [x] Dependabot/Renovate PR analysis
-* [ ] Additional package ecosystems
+* [x] Additional package ecosystems
 * [ ] Dependency graph visualisation
 * [ ] Upgrade risk scoring
 * [ ] Historical evaluation against real dependency failures
@@ -490,10 +519,11 @@ explanations, and bounded safe-upgrade solver are implemented. Future work will
 connect registry candidate discovery, CI integrations, visualization, and risk
 scoring to these foundations.
 
-The first real-world target is a Flutter application. SafeBump can now analyse
-resolved dependency-update states locally or from Dependabot/Renovate pull
-requests; future work will add risk scoring, visualisation, and more package
-ecosystems.
+The first real-world target was a Flutter application. SafeBump can now build,
+compare, and report resolved graphs from Dart/Flutter, npm, Python, Maven, and
+Gradle projects. The safe-upgrade candidate-catalog parser remains Dart-focused;
+future work will add registry discovery and ecosystem-specific constraint
+translation for the solver, along with risk scoring and visualisation.
 
 ---
 

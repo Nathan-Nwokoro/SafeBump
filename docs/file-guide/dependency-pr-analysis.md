@@ -45,9 +45,11 @@ sets up Java and Gradle, builds the SafeBump distribution from the checked-out
 action revision, runs `pr-report`, appends the report to the job summary, and
 exposes the report path as `steps.<id>.outputs.report-file`.
 
-The calling workflow must prepare two resolved Dart or Flutter directories
-before invoking the action. This keeps package-manager setup separate from the
-ecosystem-independent report engine.
+The calling workflow must prepare two resolved project directories before
+invoking the action. All built-in ecosystems are supported. Optional `ecosystem` and
+`plugin-directory` inputs handle mixed roots and trusted external providers.
+This keeps package-manager setup separate from the ecosystem-independent report
+engine.
 
 ## Workflow templates
 

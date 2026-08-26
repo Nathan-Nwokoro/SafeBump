@@ -13,6 +13,10 @@ The GitHub Actions workflow runs the full clean build on every pull request and
 push to `main`. It also smoke-tests the installed `safebump solve` launcher and
 retains HTML/XML test reports when CI fails.
 
+Phase 8 adds focused fixture suites for npm package-lock v3, pip inspect schema
+v1, Maven dependency-plugin JSON, Gradle ResolutionResult JSON, automatic
+ecosystem detection, and graphs containing multiple versions of one name.
+
 ## `model/PackageVersionTest.java`
 
 Full path:

@@ -1,10 +1,11 @@
 package io.safebump.cli;
 
-import io.safebump.adapters.dart.DartUpgradeAnalyzer;
+import io.safebump.adapters.BuiltInEcosystems;
 import io.safebump.core.adapter.DependencySourceException;
 import io.safebump.core.report.PullRequestReportFormatter;
 import io.safebump.core.upgrade.UpgradeAnalysis;
 import io.safebump.core.upgrade.UpgradeAnalysisService;
+import io.safebump.core.upgrade.EcosystemUpgradeAnalyzer;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
@@ -46,11 +47,20 @@ public final class PullRequestReportCommand implements Callable<Integer> {
             description = "Write the Markdown report to this file instead of standard output.")
     private Path output;
 
+    @Option(names = "--ecosystem", paramLabel = "<id>",
+            description = "Select an ecosystem when project markers are ambiguous.")
+    private String ecosystem;
+
+    @Option(names = "--plugin-dir", paramLabel = "<directory>",
+            description = "Load additional ecosystem-provider JARs from this directory.")
+    private Path pluginDirectory;
+
     @Spec
     private CommandSpec commandSpec;
 
     public PullRequestReportCommand() {
-        this(new DartUpgradeAnalyzer(), new PullRequestReportFormatter());
+        this.upgradeAnalysisService = null;
+        this.reportFormatter = new PullRequestReportFormatter();
     }
 
     PullRequestReportCommand(
@@ -64,8 +74,11 @@ public final class PullRequestReportCommand implements Callable<Integer> {
     @Override
     public Integer call() {
         try {
-            UpgradeAnalysis analysis = upgradeAnalysisService.analyse(
-                    beforeProject, afterProject);
+            UpgradeAnalysisService service = upgradeAnalysisService == null
+                    ? new EcosystemUpgradeAnalyzer(
+                            BuiltInEcosystems.create(pluginDirectory), ecosystem)
+                    : upgradeAnalysisService;
+            UpgradeAnalysis analysis = service.analyse(beforeProject, afterProject);
             String report = reportFormatter.format(analysis);
             if (output == null) {
                 commandSpec.commandLine().getOut().print(report);

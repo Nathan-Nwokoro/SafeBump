@@ -22,6 +22,9 @@ public final class PullRequestReportFormatter {
 
         report.append(COMMENT_MARKER).append('\n')
                 .append("## SafeBump dependency analysis\n\n")
+                .append("**Ecosystem:** `")
+                .append(escapeCode(analysis.before().ecosystem()))
+                .append("`\n\n")
                 .append(summarySentence(diff)).append("\n\n")
                 .append("| Metric | Result |\n")
                 .append("| --- | ---: |\n")

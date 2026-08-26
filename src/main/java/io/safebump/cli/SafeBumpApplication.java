@@ -13,6 +13,7 @@ import picocli.CommandLine.Model.CommandSpec;
         description = "Understand dependency upgrades before they break your project.",
         subcommands = {
                 GraphCommand.class,
+                DetectCommand.class,
                 CompareCommand.class,
                 SolveCommand.class,
                 PullRequestReportCommand.class})

@@ -57,6 +57,6 @@ public final class DartProjectAnalyzer implements ProjectAnalysisService {
         List<AnalysisIssue> issues = new ArrayList<>(
                 reconciler.reconcile(dependencySnapshot, pubspec, lockfile));
         issues.addAll(constraintAnalyzer.analyse(dependencySnapshot, pubspec));
-        return new ProjectAnalysis(dependencySnapshot, issues);
+        return new ProjectAnalysis(dependencySnapshot, issues, "dart");
     }
 }

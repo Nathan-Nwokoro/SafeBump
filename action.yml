@@ -1,5 +1,5 @@
 name: SafeBump dependency PR analysis
-description: Compare two resolved Dart or Flutter projects and create a Markdown PR report.
+description: Compare two resolved supported projects and create a Markdown PR report.
 
 inputs:
   before-project:
@@ -8,6 +8,14 @@ inputs:
   after-project:
     description: Absolute or workspace-relative path to the resolved pull-request project.
     required: true
+  ecosystem:
+    description: Optional ecosystem ID for mixed-language repository roots.
+    required: false
+    default: ""
+  plugin-directory:
+    description: Optional directory containing trusted ecosystem-provider JARs.
+    required: false
+    default: ""
 
 outputs:
   report-file:
@@ -42,13 +50,23 @@ runs:
       env:
         SAFEBUMP_BEFORE_PROJECT: ${{ inputs.before-project }}
         SAFEBUMP_AFTER_PROJECT: ${{ inputs.after-project }}
+        SAFEBUMP_ECOSYSTEM: ${{ inputs.ecosystem }}
+        SAFEBUMP_PLUGIN_DIRECTORY: ${{ inputs.plugin-directory }}
       run: |
         set -euo pipefail
         report_file="$RUNNER_TEMP/safebump-pr-report.md"
-        "$GITHUB_ACTION_PATH/build/install/safebump/bin/safebump" \
-          pr-report \
-          "$SAFEBUMP_BEFORE_PROJECT" \
-          "$SAFEBUMP_AFTER_PROJECT" \
+        arguments=(
+          pr-report
+          "$SAFEBUMP_BEFORE_PROJECT"
+          "$SAFEBUMP_AFTER_PROJECT"
           --output "$report_file"
+        )
+        if [[ -n "$SAFEBUMP_ECOSYSTEM" ]]; then
+          arguments+=(--ecosystem "$SAFEBUMP_ECOSYSTEM")
+        fi
+        if [[ -n "$SAFEBUMP_PLUGIN_DIRECTORY" ]]; then
+          arguments+=(--plugin-dir "$SAFEBUMP_PLUGIN_DIRECTORY")
+        fi
+        "$GITHUB_ACTION_PATH/build/install/safebump/bin/safebump" "${arguments[@]}"
         echo "report-file=$report_file" >> "$GITHUB_OUTPUT"
         cat "$report_file" >> "$GITHUB_STEP_SUMMARY"
