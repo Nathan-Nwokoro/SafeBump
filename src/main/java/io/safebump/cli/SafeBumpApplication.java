@@ -11,7 +11,11 @@ import picocli.CommandLine.Model.CommandSpec;
         mixinStandardHelpOptions = true,
         version = "SafeBump 0.1.0",
         description = "Understand dependency upgrades before they break your project.",
-        subcommands = {GraphCommand.class, CompareCommand.class, SolveCommand.class})
+        subcommands = {
+                GraphCommand.class,
+                CompareCommand.class,
+                SolveCommand.class,
+                PullRequestReportCommand.class})
 public final class SafeBumpApplication implements Runnable {
 
     @Spec

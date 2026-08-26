@@ -1,0 +1,71 @@
+name: SafeBump dependency PR analysis
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: safebump-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  analyse:
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' ||
+      github.event.pull_request.user.login == 'renovate[bot]' ||
+      github.event.pull_request.user.login == 'renovate-bot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out base revision
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: .safebump/base
+
+      - name: Check out proposed revision
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: .safebump/after
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # If pubspec.yaml is below the repository root, add its relative folder
+      # to both working-directory values and both SafeBump action inputs.
+      - name: Resolve base dependencies
+        working-directory: .safebump/base
+        run: flutter pub get
+
+      - name: Resolve proposed dependencies
+        working-directory: .safebump/after
+        run: flutter pub get
+
+      - name: Run SafeBump
+        id: safebump
+        uses: Nathan-Nwokoro/SafeBump@main
+        with:
+          before-project: .safebump/base
+          after-project: .safebump/after
+
+      - name: Record pull request number
+        env:
+          SAFEBUMP_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: echo "$SAFEBUMP_PR_NUMBER" > "$RUNNER_TEMP/safebump-pr-number.txt"
+
+      - name: Store report for the comment workflow
+        uses: actions/upload-artifact@v7
+        with:
+          name: safebump-pr-report
+          path: |
+            ${{ steps.safebump.outputs.report-file }}
+            ${{ runner.temp }}/safebump-pr-number.txt
+          retention-days: 1
